@@ -12,26 +12,29 @@ const igrejaLat = -23.6232483430473;
 const igrejaLng = -46.5494611915352;
 
 // 🔥 ÍCONES
+const isMobile = window.innerWidth < 768;
+
+// 🔥 tamanhos base
+const sizePadrao = isMobile ? 45 : 30;
+const sizeSelecionado = isMobile ? 55 : 40;
+const sizeIgreja = isMobile ? 50 : 35;
+
 const iconPadrao = L.icon({
-  //iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-  // iconUrl: 'https://cdn-icons-png.flaticon.com/512/660/660624.png',
   iconUrl: 'https://cdn-icons-png.flaticon.com/128/17939/17939340.png',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30]
+  iconSize: [sizePadrao, sizePadrao],
+  iconAnchor: [sizePadrao / 2, sizePadrao]
 });
 
 const iconSelecionado = L.icon({
   iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40]
+  iconSize: [sizeSelecionado, sizeSelecionado],
+  iconAnchor: [sizeSelecionado / 2, sizeSelecionado]
 });
 
 const iconIgreja = L.icon({
-  //iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684809.png',
- // iconUrl: 'https://cdn-icons-png.flaticon.com/128/11354/11354912.png',
- iconUrl: 'logo_paz.png',
-  iconSize: [35, 35],
-  iconAnchor: [17, 35]
+  iconUrl: 'logo_paz.png',
+  iconSize: [sizeIgreja, sizeIgreja],
+  iconAnchor: [sizeIgreja / 2, sizeIgreja]
 });
 
 
