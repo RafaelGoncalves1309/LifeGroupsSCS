@@ -62,7 +62,7 @@ button:hover {
 
 /* ===== MAPA ===== */
 #mapa {
-  height: 700px;
+  height: 900px;
   width: 100%;
   max-width: 900px;
   margin-top: 15px;
@@ -132,7 +132,7 @@ button:hover {
   }
 
   #mapa {
-    height: 350px;
+    height: 750px;
   }
 
   button {
