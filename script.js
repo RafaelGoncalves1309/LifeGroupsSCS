@@ -11,32 +11,28 @@ let markerIgreja;
 const igrejaLat = -23.6232483430473;
 const igrejaLng = -46.5494611915352;
 
-// 🔥 ÍCONES
-const isMobile = window.innerWidth < 768;
+// 🔥 URLs dos ícones
+const iconUrlPadrao = 'https://cdn-icons-png.flaticon.com/512/17939/17939340.png';
+const iconUrlSelecionado = 'https://cdn-icons-png.flaticon.com/512/684/684908.png';
+const iconUrlIgreja = 'logo_paz.png';
 
-// 🔥 tamanhos base
-const sizePadrao = isMobile ? 45 : 30;
-const sizeSelecionado = isMobile ? 55 : 40;
-const sizeIgreja = isMobile ? 50 : 35;
+// 🔥 função para criar ícone dinâmico
+function criarIcone(url, size) {
+  return L.icon({
+    iconUrl: url,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size]
+  });
+}
 
-const iconPadrao = L.icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/128/17939/17939340.png',
-  iconSize: [sizePadrao, sizePadrao],
-  iconAnchor: [sizePadrao / 2, sizePadrao]
-});
-
-const iconSelecionado = L.icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-  iconSize: [sizeSelecionado, sizeSelecionado],
-  iconAnchor: [sizeSelecionado / 2, sizeSelecionado]
-});
-
-const iconIgreja = L.icon({
-  iconUrl: 'logo_paz.png',
-  iconSize: [sizeIgreja, sizeIgreja],
-  iconAnchor: [sizeIgreja / 2, sizeIgreja]
-});
-
+// 🔥 calcula tamanho baseado no zoom
+function getSizeByZoom(zoom) {
+  let size = 30;
+  if (zoom >= 14) size = 40;
+  if (zoom >= 16) size = 55;
+  if (zoom >= 18) size = 70;
+  return size;
+}
 
 // ================= BUSCAR DADOS =================
 async function buscarGrupos() {
@@ -71,18 +67,38 @@ async function iniciarMapa() {
 
   markersLayer = L.layerGroup().addTo(map);
 
-  // ⛪ IGREJA FIXA
-  markerIgreja = L.marker([igrejaLat, igrejaLng], { icon: iconIgreja })
+  const size = getSizeByZoom(map.getZoom());
+
+  // ⛪ IGREJA
+  markerIgreja = L.marker([igrejaLat, igrejaLng], {
+    icon: criarIcone(iconUrlIgreja, size + 8)
+  })
     .addTo(map)
-    .bindPopup("Campus São Caetano", {
-      offset: [0,-20]
-    })
+    .bindPopup("Campus São Caetano", { offset: [0, -20] })
     .openPopup();
 
   const grupos = await buscarGrupos();
 
   mostrarGrupos(grupos, igrejaLat, igrejaLng);
   mostrarMapa(grupos, igrejaLat, igrejaLng);
+
+  // 🔥 zoom dinâmico
+  map.on('zoomend', () => {
+    const zoom = map.getZoom();
+    const size = getSizeByZoom(zoom);
+
+    Object.entries(markers).forEach(([nome, marker]) => {
+      if (marker === markerSelecionado) {
+        marker.setIcon(criarIcone(iconUrlSelecionado, size + 12));
+      } else {
+        marker.setIcon(criarIcone(iconUrlPadrao, size));
+      }
+    });
+
+    if (markerIgreja) {
+      markerIgreja.setIcon(criarIcone(iconUrlIgreja, size + 8));
+    }
+  });
 }
 
 // ================= DISTÂNCIA =================
@@ -123,44 +139,28 @@ function mostrarGrupos(grupos, userLat, userLng) {
     const card = document.createElement("div");
     card.classList.add("life-card");
 
-    if (index === 0) {
-      card.classList.add("proximo");
-    }
+    if (index === 0) card.classList.add("proximo");
 
     card.innerHTML = `
       <div class="life-titulo">${g["Nome do Life"]}</div>
-
-      <div class="life-info">
-        ${g.Endereco}, ${g.Bairro}, ${g.Cidade}
-      </div>
-
-      <div class="life-info">
-        ${g.Dia} às ${g.Horario}
-      </div>
-
-      <div class="life-info">
-        Líder: ${g.Lider} | ${g.Telefone}
-      </div>
-
-      <div class="life-info">
-        Público: ${g.Publico}
-      </div>
-
-      <div class="life-distancia">
-        📍 ${dist} km de você
-      </div>
+      <div class="life-info">${g.Endereco}, ${g.Bairro}, ${g.Cidade}</div>
+      <div class="life-info">${g.Dia} às ${g.Horario}</div>
+      <div class="life-info">Líder: ${g.Lider} | ${g.Telefone}</div>
+      <div class="life-info">Público: ${g.Publico}</div>
+      <div class="life-distancia">📍 ${dist} km de você</div>
     `;
 
-    // 🔥 CLICK → DESTACA NO MAPA
     card.addEventListener("click", () => {
       const marker = markers[g["Nome do Life"]];
       if (!marker) return;
 
+      const size = getSizeByZoom(map.getZoom());
+
       if (markerSelecionado) {
-        markerSelecionado.setIcon(iconPadrao);
+        markerSelecionado.setIcon(criarIcone(iconUrlPadrao, size));
       }
 
-      marker.setIcon(iconSelecionado);
+      marker.setIcon(criarIcone(iconUrlSelecionado, size + 12));
       marker.openPopup();
 
       markerSelecionado = marker;
@@ -172,28 +172,22 @@ function mostrarGrupos(grupos, userLat, userLng) {
   });
 }
 
+// ================= MAPA =================
 function mostrarMapa(grupos, userLat, userLng) {
   map.setView([userLat, userLng], 15);
 
   markersLayer.clearLayers();
-  markers = {}; // limpa referência
+  markers = {};
 
-  // 🔥 verifica se é a mesma localização da igreja
-  const mesmaLocalizacao = 
+  const mesmaLocalizacao =
     Math.abs(userLat - igrejaLat) < 0.0001 &&
     Math.abs(userLng - igrejaLng) < 0.0001;
 
-  // ⛪ mantém igreja fixa
   if (markerIgreja) {
     markerIgreja.addTo(map);
-
-    // 🔥 se for a mesma localização, abre o popup da igreja
-    if (mesmaLocalizacao) {
-      markerIgreja.openPopup();
-    }
+    if (mesmaLocalizacao) markerIgreja.openPopup();
   }
 
-  // 📍 usuário (só se NÃO for a igreja)
   if (!mesmaLocalizacao) {
     L.marker([userLat, userLng])
       .addTo(markersLayer)
@@ -201,14 +195,16 @@ function mostrarMapa(grupos, userLat, userLng) {
       .openPopup();
   }
 
-  // 🔥 aplica filtros
   const gruposFiltrados = aplicarFiltros(grupos);
+  const size = getSizeByZoom(map.getZoom());
 
   gruposFiltrados.forEach(g => {
-    if (!isNaN(g.latitude) && !isNaN(g.longitude)) {
+    if (!isNaN(g.latitude)) {
       const dist = calcularDistancia(userLat, userLng, g.latitude, g.longitude).toFixed(2);
 
-      const marker = L.marker([g.latitude, g.longitude], { icon: iconPadrao })
+      const marker = L.marker([g.latitude, g.longitude], {
+        icon: criarIcone(iconUrlPadrao, size)
+      })
         .addTo(markersLayer)
         .bindPopup(`
           <b>${g["Nome do Life"]}</b><br>
@@ -224,58 +220,12 @@ function mostrarMapa(grupos, userLat, userLng) {
   });
 }
 
-// ================= MAPA =================
-/* function mostrarMapa(grupos, userLat, userLng) {
-  map.setView([userLat, userLng], 15);
-
-  markersLayer.clearLayers();
-  markers = {}; // 🔥 limpa referência
-
-  // ⛪ mantém igreja fixa
-  if (markerIgreja) {
-    markerIgreja.addTo(map);
-  }
-
-  // 📍 usuário
-  L.marker([userLat, userLng])
-    .addTo(markersLayer)
-    .bindPopup("Você está aqui")
-    .openPopup();
-
-  const gruposFiltrados = aplicarFiltros(grupos);
-
-  gruposFiltrados.forEach(g => {
-    if (!isNaN(g.latitude) && !isNaN(g.longitude)) {
-      const dist = calcularDistancia(userLat, userLng, g.latitude, g.longitude).toFixed(2);
-
-      const marker = L.marker([g.latitude, g.longitude], { icon: iconPadrao })
-        .addTo(markersLayer)
-        .bindPopup(`
-          <b>${g["Nome do Life"]}</b><br>
-          ${g.Endereco}<br>
-          ${g.Bairro}, ${g.Cidade}<br>
-          ${g.Dia} às ${g.Horario}<br>
-          Distância: ${dist} km<br>
-          Público: ${g.Publico}
-        `);
-
-      markers[g["Nome do Life"]] = marker;
-    }
-  });
-} */
-
-
-
 // ================= GEOLOCALIZAÇÃO =================
 function buscarLocalizacao() {
   navigator.geolocation.getCurrentPosition(async pos => {
-    const userLat = pos.coords.latitude;
-    const userLng = pos.coords.longitude;
-
     const grupos = await buscarGrupos();
-
-    mostrarGrupos(grupos, userLat, userLng);
-    mostrarMapa(grupos, userLat, userLng);
+    mostrarGrupos(grupos, pos.coords.latitude, pos.coords.longitude);
+    mostrarMapa(grupos, pos.coords.latitude, pos.coords.longitude);
   });
 }
 
@@ -292,28 +242,22 @@ async function geocodeEnderecoOSM(endereco) {
     };
   }
 
-  alert("Endereço não encontrado.");
   return null;
 }
 
 // ================= BOTÕES =================
-
 document.getElementById("btn-buscar").addEventListener("click", async () => {
   const endereco = document.getElementById("input-endereco").value.trim();
-
   const grupos = await buscarGrupos();
 
-  // 🔥 vazio → usa igreja
   if (!endereco) {
     mostrarGrupos(grupos, igrejaLat, igrejaLng);
     mostrarMapa(grupos, igrejaLat, igrejaLng);
     return;
   }
 
-  // 🔥 tenta buscar endereço
   const pos = await geocodeEnderecoOSM(endereco);
 
-  // 🔥 inválido → erro
   if (!pos) {
     alert("Endereço não encontrado!");
     return;
@@ -323,75 +267,29 @@ document.getElementById("btn-buscar").addEventListener("click", async () => {
   mostrarMapa(grupos, pos.lat, pos.lng);
 });
 
-/*
-document.getElementById("btn-buscar").addEventListener("click", async () => {
-  const endereco = document.getElementById("input-endereco").value;
-
-  if (!endereco) {
-    alert("Digite um endereço válido!");
-    return;
-  }
-
-  const pos = await geocodeEnderecoOSM(endereco);
-  if (!pos) return;
-
-  const grupos = await buscarGrupos();
-
-  mostrarGrupos(grupos, pos.lat, pos.lng);
-  mostrarMapa(grupos, pos.lat, pos.lng);
-}); */
-
 document.getElementById("btn-limpar").addEventListener("click", () => {
   document.getElementById("input-endereco").value = "";
   document.getElementById("filtroDia").value = "";
   document.getElementById("filtroPublico").value = "";
   document.getElementById("lista").innerHTML = "";
-
   iniciarMapa();
 });
 
 // ================= FILTROS =================
 function aplicarFiltros(grupos) {
-  const diaSelecionado = document.getElementById("filtroDia").value.toLowerCase();
-  const publicoSelecionado = document.getElementById("filtroPublico").value.toLowerCase();
+  const dia = document.getElementById("filtroDia").value.toLowerCase();
+  const publico = document.getElementById("filtroPublico").value.toLowerCase();
 
   return grupos.filter(g => {
-    const diaGrupo = (g.Dia || "").toLowerCase();
-    const publicoGrupo = (g.Publico || "").toLowerCase();
-
-    const bateDia = !diaSelecionado || diaGrupo.includes(diaSelecionado);
-    const batePublico = !publicoSelecionado || publicoGrupo.includes(publicoSelecionado);
-
-    return bateDia && batePublico;
+    return (!dia || (g.Dia || "").toLowerCase().includes(dia)) &&
+           (!publico || (g.Publico || "").toLowerCase().includes(publico));
   });
 }
 
-// ================= AUTO UPDATE FILTRO =================
-document.getElementById("filtroDia").addEventListener("change", atualizarBusca);
-document.getElementById("filtroPublico").addEventListener("change", atualizarBusca);
-
-async function atualizarBusca() {
-  const endereco = document.getElementById("input-endereco").value;
-  const grupos = await buscarGrupos();
-
-  if (endereco) {
-    const pos = await geocodeEnderecoOSM(endereco);
-    if (!pos) return;
-
-    mostrarGrupos(grupos, pos.lat, pos.lng);
-    mostrarMapa(grupos, pos.lat, pos.lng);
-  } else {
-    mostrarGrupos(grupos, igrejaLat, igrejaLng);
-    mostrarMapa(grupos, igrejaLat, igrejaLng);
-  }
-}
-
 // ================= INÍCIO =================
-window.onload = () => {
-  iniciarMapa();
-};
+window.onload = iniciarMapa;
 
-document.getElementById("input-endereco").addEventListener("keypress", function(e) {
+document.getElementById("input-endereco").addEventListener("keypress", e => {
   if (e.key === "Enter") {
     e.preventDefault();
     document.getElementById("btn-buscar").click();
