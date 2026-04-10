@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Life Groups</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="maps.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+  </style>
+  
+</head>
+<body>
+
+  <div class="header"> 
+    <img src="logo_paz.png" alt="Logo Paz" id="logo">
+    <h1 id="titulo">Life Groups Paz Sao Caetano</h1>
+   
+    
+  </div>
+
+  <div> 
+    <input type="text" id="input-endereco" placeholder="Digite seu endereço">
+  </div>
+
+  <div style="max-width: 900px; margin-bottom: 15px;">
+
+  <select id="filtroDia">
+    <option value="">Todos os dias</option>
+    <option value="terça">Terça</option>
+    <option value="quarta">Quarta</option>
+    <option value="quinta">Quinta</option>
+    <option value="sexta">Sexta</option>
+    <option value="sábado">Sábado</option>
+  </select>
+
+  <select id="filtroPublico" style="margin-top: 8px;">
+    <option value="">Todos os públicos</option>
+    <option value="Geral">Geral</option>
+    <option value="Diflen">Diflen</option>
+    <option value="Start">Start</option>
+  </select>
+
+</div>
+
+  <button onclick="buscarLocalizacao()">Usar minha localização</button>
+  
+  <button id="btn-buscar">Buscar Life mais próximo</button>
+  <button id="btn-limpar">Limpar</button> 
+  <div id="mapa"></div>
+  <div id="lista"></div>
+  
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+/* maps.css */
+
+/* ===== RESET BÁSICO ===== */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #ffffff;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#logo {
+  height: 60px;
+  width: 70px;
+}
+
+#titulo {
+  font-size: 32px;
+  color: #11005e;
+  margin: 0;
+}
+
+/* ===== INPUT ===== */
+#input-endereco {
+  width: 100%;
+  max-width: 900px;
+  height: 40px;
+  font-size: 16px;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* ===== BOTÕES ===== */
+button {
+  padding: 10px 16px;
+  font-size: 15px;
+  background-color: #11005e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #8071c2;
+  transform: translateY(-2px);
+}
+
+/* ===== MAPA ===== */
+#mapa {
+  height: 460px;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ===== LISTA ===== */
+#lista {
+  margin-top: 20px;
+  padding: 15px;
+  max-width: 900px;
+  width: 100%;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  border-color: #11005e;
+  border: 1px;
+  line-height: 1.5em;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+/* ===== ITEM DA LISTA ===== */
+#lista p {
+  margin-bottom: 12px;
+  padding: 12px 12px 12px 16px;
+  background-color: #ffffff;
+  border-left: 5px solid #11005e; /* 🔥 borda azul */
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+/* ===== HOVER ===== */
+#lista p:hover {
+  background-color: #eef0ff;
+  border-left-color: #8071c2;
+  transform: translateX(4px);
+  cursor: pointer;
+}
+
+/* ===== TEXTO ===== */
+#lista b {
+  color: #000;
+  font-size: 16px;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #titulo {
+    font-size: 22px;
+  }
+
+  #logo {
+    height: 50px;
+    width: 60px;
+  }
+
+  #mapa {
+    height: 350px;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}
+
+/* ===== CARD ===== */
+.life-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-left: 5px solid #11005e;
+  transition: all 0.25s ease;
+}
+
+.life-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* ===== CARD MAIS PRÓXIMO ===== */
+.life-card.proximo {
+  border-left: 5px solid #11005e; /* verde */
+  background-color: #ffffff;
+}
+
+/* ===== TÍTULO ===== */
+.life-titulo {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* ===== INFO ===== */
+.life-info {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #11005e;
+  
+}
+
+/* ===== DISTÂNCIA ===== */
+.life-distancia {
+  font-weight: bold;
+  color: #11005e;
+}
+
+/* ===== BOTÃO ===== */
+.life-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #11005e;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.life-btn:hover {
+  background-color: #8071c2;
+}
+
+select {
+  width: 100%;
+  max-width: 300px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
