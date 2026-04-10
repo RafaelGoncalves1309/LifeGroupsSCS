@@ -61,7 +61,7 @@ async function buscarGrupos() {
 async function iniciarMapa() {
   if (map) map.remove();
 
-  map = L.map('mapa').setView([igrejaLat, igrejaLng], 13);
+  map = L.map('mapa').setView([igrejaLat, igrejaLng], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
