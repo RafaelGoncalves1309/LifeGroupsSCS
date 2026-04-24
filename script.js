@@ -143,9 +143,10 @@ function mostrarGrupos(grupos, userLat, userLng) {
 
     card.innerHTML = `
       <div class="life-titulo">${g["Nome do Life"]}</div>
+      <div class="life-info"> ${g.Formato}</div>
       <div class="life-info">${g.Endereco}, ${g.Bairro}, ${g.Cidade}</div>
       <div class="life-info">${g.Dia} às ${g.Horario}</div>
-      <div class="life-info">Líder: ${g.Lider} | ${g.Telefone}</div>
+      <div class="life-info">Líder: ${g.Lider}  ${g.Telefone} </div>
       <div class="life-info">Público: ${g.Publico}</div>
       <div class="life-distancia">📍 ${dist} km de você</div>
     `;
@@ -208,6 +209,8 @@ function mostrarMapa(grupos, userLat, userLng) {
         .addTo(markersLayer)
         .bindPopup(`
           <b>${g["Nome do Life"]}</b><br>
+          ${g.Formato}<br>
+          ${g.Lider}<br>
           ${g.Endereco}<br>
           ${g.Bairro}, ${g.Cidade}<br>
           ${g.Dia} às ${g.Horario}<br>
@@ -278,11 +281,13 @@ document.getElementById("btn-limpar").addEventListener("click", () => {
 // ================= FILTROS =================
 function aplicarFiltros(grupos) {
   const dia = document.getElementById("filtroDia").value.toLowerCase();
-  const publico = document.getElementById("filtroPublico").value.toLowerCase();
+ // const publico = document.getElementById("filtroPublico").value.toLowerCase();
 
   return grupos.filter(g => {
-    return (!dia || (g.Dia || "").toLowerCase().includes(dia)) &&
-           (!publico || (g.Publico || "").toLowerCase().includes(publico));
+   // return (!dia || (g.Dia || "").toLowerCase().includes(dia)) &&
+     //      (!publico || (g.Publico || "").toLowerCase().includes(publico));
+
+     return (!dia || (g.Dia || "").toLowerCase().includes(dia));
   });
 }
 
