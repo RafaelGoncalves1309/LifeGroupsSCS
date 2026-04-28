@@ -74,7 +74,7 @@ async function iniciarMapa() {
     icon: criarIcone(iconUrlIgreja, size + 8)
   })
     .addTo(map)
-    .bindPopup("Campus São Caetano", { offset: [0, -20] })
+    .bindPopup("<strong><i>Campus São Caetano</i><br><br>Lifes Online<br></strong><br>Agape Two<br>Líderes: Érica e Mayra<br>Quinta às 20h30<br><br>Em Chamas<br>Líderes: José Alan e Aline<br> Segunda às 20h", { offset: [0, -20] })
     .openPopup();
 
   const grupos = await buscarGrupos();
