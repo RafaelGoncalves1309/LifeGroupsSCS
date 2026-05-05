@@ -74,8 +74,9 @@ async function iniciarMapa() {
     icon: criarIcone(iconUrlIgreja, size + 8)
   })
     .addTo(map)
-    .bindPopup("<strong><i>Campus São Caetano</i><br><br>Lifes Online<br></strong><br>Agape Two<br>Líderes: Érica e Mayra<br>Quinta às 20h30<br><br>Em Chamas<br>Líderes: José Alan e Aline<br> Segunda às 20h", { offset: [0, -20] })
-    .openPopup();
+    .bindPopup("<strong><i>Campus São Caetano</i><br>", { offset: [0, -40] })
+   // .openPopup();
+   markerIgreja.closePopup(); 
 
   const grupos = await buscarGrupos();
 
@@ -147,7 +148,10 @@ function mostrarGrupos(grupos, userLat, userLng) {
       <div class="life-info">${g.Endereco}, ${g.Bairro}, ${g.Cidade}</div>
       <div class="life-info">${g.Dia} às ${g.Horario}</div>
       <div class="life-info">Líder: ${g.Lider}  ${g.Telefone} </div>
+      <div class="life-info">Auxiliar: ${g.Auxiliar}</div>
+      <div class="life-info">Supervisor: ${g.Supervisor}</div>      
       <div class="life-info">Público: ${g.Publico}</div>
+
       <div class="life-distancia">📍 ${dist} km de você</div>
     `;
 
@@ -208,14 +212,16 @@ function mostrarMapa(grupos, userLat, userLng) {
       })
         .addTo(markersLayer)
         .bindPopup(`
-          <b>${g["Nome do Life"]}</b><br>
-          ${g.Formato}<br>
-          ${g.Lider}<br>
+          <b>${g["Nome do Life"]}</b><br>         
+          Líderes: ${g.Lider}<br>
+          Auxiliar: ${g.Auxiliar}<br>
+          Supervisores: ${g.Supervisor}<br>
           ${g.Endereco}<br>
           ${g.Bairro}, ${g.Cidade}<br>
           ${g.Dia} às ${g.Horario}<br>
+          Público: ${g.Publico} <br>
           Distância: ${dist} km<br>
-          Público: ${g.Publico}
+         
         `);
 
       markers[g["Nome do Life"]] = marker;
@@ -272,7 +278,8 @@ document.getElementById("btn-buscar").addEventListener("click", async () => {
 
 document.getElementById("btn-limpar").addEventListener("click", () => {
   document.getElementById("input-endereco").value = "";
-  document.getElementById("filtroDia").value = "";
+  const filtroDiaEl = document.getElementById("filtroDia");
+if (filtroDiaEl) filtroDiaEl.value = "";
   document.getElementById("filtroPublico").value = "";
   document.getElementById("lista").innerHTML = "";
   iniciarMapa();
@@ -280,14 +287,12 @@ document.getElementById("btn-limpar").addEventListener("click", () => {
 
 // ================= FILTROS =================
 function aplicarFiltros(grupos) {
-  const dia = document.getElementById("filtroDia").value.toLowerCase();
- // const publico = document.getElementById("filtroPublico").value.toLowerCase();
+  const filtroDiaEl = document.getElementById("filtroDia");
+
+  const dia = filtroDiaEl ? filtroDiaEl.value.toLowerCase() : "";
 
   return grupos.filter(g => {
-   // return (!dia || (g.Dia || "").toLowerCase().includes(dia)) &&
-     //      (!publico || (g.Publico || "").toLowerCase().includes(publico));
-
-     return (!dia || (g.Dia || "").toLowerCase().includes(dia));
+    return (!dia || (g.Dia || "").toLowerCase().includes(dia));
   });
 }
 
@@ -299,4 +304,10 @@ document.getElementById("input-endereco").addEventListener("keypress", e => {
     e.preventDefault();
     document.getElementById("btn-buscar").click();
   }
+
+
+});
+
+  document.getElementById("btn-online").addEventListener("click", () => {
+  window.location.href = "life_online.html";
 });

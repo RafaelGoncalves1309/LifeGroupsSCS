@@ -43,7 +43,7 @@ body {
 /* ===== BOTÕES ===== */
 button {
   padding: 10px 16px;
-  font-size: 17px;
+  font-size: 16px;
   background-color: #11005e;
   color: white;
   border: none;
@@ -51,7 +51,7 @@ button {
   cursor: pointer;
   transition: all 0.25s ease;
   width: 100%;
-  max-width: 300px;
+  max-width: 222px;
   margin-bottom: 10px;
 }
 
@@ -212,3 +212,4 @@ select {
 .leaflet-popup-content {
   font-size: 20px;
 }
+
