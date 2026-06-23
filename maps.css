@@ -62,9 +62,9 @@ button:hover {
 
 /* ===== MAPA ===== */
 #mapa {
-  height: 600px;
+  height: 400px;
   width: 100%;
-  max-width: 900px;
+  max-width: 95%;
   margin-top: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
